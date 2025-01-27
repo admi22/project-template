@@ -6,3 +6,5 @@ __pycache__/
 
 # ignore database
 database.db
+
+.DS_Store
