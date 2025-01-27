@@ -37,3 +37,9 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## OpenAPI Type Generation
+
+```sh
+npm run generate-types
+```
