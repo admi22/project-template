@@ -1,2 +1,8 @@
 # ignore virtual environment
-backend/projectenv/
+venv/
+
+# ignore cache
+__pycache__/
+
+# ignore database
+database.db
