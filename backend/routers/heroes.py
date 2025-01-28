@@ -3,49 +3,63 @@ from typing import Annotated
 from sqlmodel import select
 
 from backend.dependencies import SessionDep
-from backend.models.hero import Hero, HeroCreate, HeroPublic, HeroUpdate
+from backend.models.hero import Hero
 
 router = APIRouter(
-    prefix="/heroes", # this allows the subroutes to not have to repeat the /heroes part
+    prefix="/heroes",
     tags=["heroes"],
     dependencies=[],
 )
 
-
-@router.post("/", response_model=HeroPublic)
-def create_hero(hero: HeroCreate, session: SessionDep):
-    db_hero = Hero.model_validate(hero)
-    session.add(db_hero)
+@router.post("/", response_model=Hero)
+def create_hero(hero: Hero, session: SessionDep):
+    """
+    Create a new hero. The `id` field is optional and will be assigned by the database.
+    """
+    session.add(hero)
     session.commit()
-    session.refresh(db_hero)
-    return db_hero
+    session.refresh(hero)
+    return hero
 
 
-@router.get("/", response_model=list[HeroPublic])
+@router.get("/", response_model=list[Hero])
 def read_heroes(
     session: SessionDep,
     offset: int = 0,
     limit: Annotated[int, Query(le=100)] = 100,
 ):
+    """
+    Fetch a list of heroes with optional pagination (offset and limit).
+    """
     heroes = session.exec(select(Hero).offset(offset).limit(limit)).all()
     return heroes
 
 
-@router.get("/{hero_id}", response_model=HeroPublic)
+@router.get("/{hero_id}", response_model=Hero)
 def read_hero(hero_id: int, session: SessionDep):
+    """
+    Fetch a single hero by ID.
+    """
     hero = session.get(Hero, hero_id)
     if not hero:
         raise HTTPException(status_code=404, detail="Hero not found")
     return hero
 
 
-@router.patch("/{hero_id}", response_model=HeroPublic)
-def update_hero(hero_id: int, hero: HeroUpdate, session: SessionDep):
+@router.patch("/{hero_id}", response_model=Hero)
+def update_hero(hero_id: int, hero_update: Hero, session: SessionDep):
+    """
+    Update an existing hero by ID. Only the provided fields will be updated.
+    """
     hero_db = session.get(Hero, hero_id)
     if not hero_db:
         raise HTTPException(status_code=404, detail="Hero not found")
-    hero_data = hero.model_dump(exclude_unset=True)
-    hero_db.sqlmodel_update(hero_data)
+
+    # Update fields dynamically using the provided Hero model
+    hero_data = hero_update.dict(exclude_unset=True)
+    for key, value in hero_data.items():
+        setattr(hero_db, key, value)
+
     session.add(hero_db)
     session.commit()
     session.refresh(hero_db)
@@ -54,6 +68,9 @@ def update_hero(hero_id: int, hero: HeroUpdate, session: SessionDep):
 
 @router.delete("/{hero_id}")
 def delete_hero(hero_id: int, session: SessionDep):
+    """
+    Delete a hero by ID.
+    """
     hero = session.get(Hero, hero_id)
     if not hero:
         raise HTTPException(status_code=404, detail="Hero not found")

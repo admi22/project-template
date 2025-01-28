@@ -11,10 +11,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Read Heroes */
+        /**
+         * Read Heroes
+         * @description Fetch a list of heroes with optional pagination (offset and limit).
+         */
         get: operations["read_heroes_heroes__get"];
         put?: never;
-        /** Create Hero */
+        /**
+         * Create Hero
+         * @description Create a new hero. The `id` field is optional and will be assigned by the database.
+         */
         post: operations["create_hero_heroes__post"];
         delete?: never;
         options?: never;
@@ -29,15 +35,24 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Read Hero */
+        /**
+         * Read Hero
+         * @description Fetch a single hero by ID.
+         */
         get: operations["read_hero_heroes__hero_id__get"];
         put?: never;
         post?: never;
-        /** Delete Hero */
+        /**
+         * Delete Hero
+         * @description Delete a hero by ID.
+         */
         delete: operations["delete_hero_heroes__hero_id__delete"];
         options?: never;
         head?: never;
-        /** Update Hero */
+        /**
+         * Update Hero
+         * @description Update an existing hero by ID. Only the provided fields will be updated.
+         */
         patch: operations["update_hero_heroes__hero_id__patch"];
         trace?: never;
     };
@@ -50,32 +65,16 @@ export interface components {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
-        /** HeroCreate */
-        HeroCreate: {
+        /** Hero */
+        Hero: {
+            /** Id */
+            id?: number | null;
             /** Name */
             name: string;
             /** Age */
             age?: number | null;
             /** Secret Name */
             secret_name: string;
-        };
-        /** HeroPublic */
-        HeroPublic: {
-            /** Name */
-            name: string;
-            /** Age */
-            age?: number | null;
-            /** Id */
-            id: number;
-        };
-        /** HeroUpdate */
-        HeroUpdate: {
-            /** Name */
-            name?: string | null;
-            /** Age */
-            age?: number | null;
-            /** Secret Name */
-            secret_name?: string | null;
         };
         /** ValidationError */
         ValidationError: {
@@ -113,7 +112,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HeroPublic"][];
+                    "application/json": components["schemas"]["Hero"][];
                 };
             };
             /** @description Validation Error */
@@ -136,7 +135,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["HeroCreate"];
+                "application/json": components["schemas"]["Hero"];
             };
         };
         responses: {
@@ -146,7 +145,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HeroPublic"];
+                    "application/json": components["schemas"]["Hero"];
                 };
             };
             /** @description Validation Error */
@@ -177,7 +176,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HeroPublic"];
+                    "application/json": components["schemas"]["Hero"];
                 };
             };
             /** @description Validation Error */
@@ -233,7 +232,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["HeroUpdate"];
+                "application/json": components["schemas"]["Hero"];
             };
         };
         responses: {
@@ -243,7 +242,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["HeroPublic"];
+                    "application/json": components["schemas"]["Hero"];
                 };
             };
             /** @description Validation Error */
