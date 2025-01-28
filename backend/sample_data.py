@@ -14,8 +14,10 @@ def load_sample_data():
     hero_3 = Hero(name="Wonderwoman", age=30, secret_name="Diana Prince")
     
     city_1 = City(name="Gotham")
+    city_2 = City(name="Metropolis")
     
     hero_1.city = city_1
+    hero_2.city = city_2
     
     db.add(hero_1)
     db.add(hero_2)

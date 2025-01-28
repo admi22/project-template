@@ -32,7 +32,7 @@ const props = defineProps({
                 </div>
             </div>
             <p>Age: {{ hero.age }}</p>
-            <p>City: {{ getCity(hero.city_id)?.name }}</p>
+            <p>City: {{ getCity(hero.city_id)?.name ?? '-' }}</p>
         </div>
     </div>
 </template>
