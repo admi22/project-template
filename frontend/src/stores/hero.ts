@@ -1,24 +1,26 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
-import type { paths } from "@/types/api-types"
+import type { paths } from "@/types/api-types";
+import type { HeroPublic } from "@/types/hero";
 
 export const useHeroStore = defineStore("hero", () => {
-  const count = ref(0);
-  const doubleCount = computed(() => count.value * 2);
-  function increment() {
-    count.value++;
-  }
+  const heroes = ref<HeroPublic[]>([]);
 
   async function fetchHeroes() {
     try {
-      const response: paths["/heroes/"]["get"]["responses"]["200"] = await fetch(`${import.meta.env.VITE_API_URL}/heroes`).then((res) => res.json());
+      // Ensure the response is typed correctly
+      const response: HeroPublic[] = await fetch(
+        `${import.meta.env.VITE_API_URL}/heroes`
+      ).then((res) => res.json());
+
       console.log(response);
+      heroes.value = response;
       return response;
     } catch (error) {
-      console.error(error);
+      console.error("Failed to fetch heroes:", error);
       return [];
     }
   }
 
-  return { count, doubleCount, increment, fetchHeroes };
+  return { heroes, fetchHeroes };
 });
