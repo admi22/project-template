@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import type { Hero } from "@/types/hero";
+import type { Hero } from "@/types/types";
 
 export const useHeroStore = defineStore("hero", () => {
   // State

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import type { Hero } from "@/types/hero";
+import type { Hero } from "@/types/types";
 
 const props = defineProps({
     hero: {
@@ -25,6 +25,7 @@ const props = defineProps({
                 </div>
             </div>
             <p>Age: {{ hero.age }}</p>
+            <p>City: {{ hero.city_id }}</p>
         </div>
     </div>
 </template>

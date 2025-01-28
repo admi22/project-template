@@ -9,7 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import SQLModel, Session
 
 from .dependencies import create_db_and_tables, engine
-from .routers import heroes
+from .routers import heroes, cities
 from .sample_data import load_sample_data
 
 
@@ -46,4 +46,5 @@ app.add_middleware(
 
 # Register routers
 app.include_router(heroes.router)
+app.include_router(cities.router)
 

@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
 import { onMounted, ref } from 'vue';
-import { useHeroStore } from "@/stores/hero";
 
 import HeroCard from "@/components/HeroCard.vue";
 import HeroModal from "@/components/HeroModal.vue";
+import { useHeroStore } from "@/stores/hero";
+import { useCityStore } from '@/stores/city';
 
 const heroStore = useHeroStore();
+const cityStore = useCityStore();
 
 onMounted(() => {
   heroStore.fetchHeroes();
+  cityStore.fetchCities();
 });
 </script>
 

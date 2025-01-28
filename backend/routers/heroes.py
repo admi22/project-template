@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Annotated
 from sqlmodel import select
+from sqlalchemy.orm import selectinload
 
 from backend.dependencies import SessionDep
 from backend.models import Hero
@@ -10,6 +11,7 @@ router = APIRouter(
     tags=["heroes"],
     dependencies=[],
 )
+
 
 @router.post("/", response_model=Hero)
 def create_hero(hero: Hero, session: SessionDep):
@@ -31,7 +33,8 @@ def read_heroes(
     """
     Fetch a list of heroes with optional pagination (offset and limit).
     """
-    heroes = session.exec(select(Hero).offset(offset).limit(limit)).all()
+    heroes = session.exec(select(Hero).options(selectinload(Hero.city)).offset(offset).limit(limit)).all()
+    print(heroes)
     return heroes
 
 
