@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from "../components/TheWelcome.vue";
+import HeroListing from "@/components/HeroListing.vue";
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
+  <main class="container mx-auto pt-8">
+    <HeroListing />
   </main>
 </template>
