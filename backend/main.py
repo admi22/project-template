@@ -6,10 +6,12 @@ from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlmodel import SQLModel
+from sqlmodel import SQLModel, Session
 
 from .dependencies import create_db_and_tables, engine
 from .routers import heroes
+from backend.sample_data.sample_data import load_sample_data
+
 
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
@@ -17,10 +19,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     Creates database tables on startup and cleans up on shutdown.
     """
     try:
-        create_db_and_tables()
+        create_db_and_tables()  # Create tables
+        load_sample_data()  # Load sample data
         yield
     finally:
-        SQLModel.metadata.drop_all(engine)
+        SQLModel.metadata.drop_all(engine)  # Clean up the database on shutdown
+
 
 app = FastAPI(
     title="Template API",
@@ -41,5 +45,5 @@ app.add_middleware(
 )
 
 # Register routers
-# app.include_router(heroes.router, prefix="/api/v1")
 app.include_router(heroes.router)
+
