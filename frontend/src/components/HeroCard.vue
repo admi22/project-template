@@ -1,6 +1,13 @@
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
+import { Icon } from '@iconify/vue';
 import type { Hero } from "@/types/types";
+import { storeToRefs } from "pinia";
+
+import { useCityStore } from "@/stores/city";
+
+const cityStore = useCityStore();
+const { cities, citiesArray } = storeToRefs(cityStore); // Destructure reactive properties
+const { getCity } = cityStore;
 
 const props = defineProps({
     hero: {
@@ -25,7 +32,7 @@ const props = defineProps({
                 </div>
             </div>
             <p>Age: {{ hero.age }}</p>
-            <p>City: {{ hero.city_id }}</p>
+            <p>City: {{ getCity(hero.city_id)?.name }}</p>
         </div>
     </div>
 </template>

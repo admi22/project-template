@@ -1,11 +1,14 @@
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import type { Hero } from "@/types/types";
 
 export const useHeroStore = defineStore("hero", () => {
   // State
-  const heroes = ref<Hero[]>([]);
+  const heroes = ref(new Map<number, Hero>()); // The Map for storing heroes by ID
   const currentHero = ref<Hero | null>(null); // For both creation and editing
+
+  // Computed: Derive an array of heroes from the map
+  const heroesArray = computed(() => Array.from(heroes.value.values()));
 
   // Actions
   async function fetchHeroes() {
@@ -13,7 +16,13 @@ export const useHeroStore = defineStore("hero", () => {
       const response: Hero[] = await fetch(`${import.meta.env.VITE_API_URL}/heroes`).then((res) =>
         res.json()
       );
-      heroes.value = response;
+
+      // Populate the map
+      heroes.value.clear();
+      response.forEach((hero) => {
+        heroes.value.set(hero.id!, hero); // Assuming hero.id is always present
+      });
+
       return response;
     } catch (error) {
       console.error("Failed to fetch heroes:", error);
@@ -35,9 +44,9 @@ export const useHeroStore = defineStore("hero", () => {
             body: JSON.stringify(currentHero.value),
           }
         ).then((res) => res.json());
-        console.log("response", response);
-        const index = heroes.value.findIndex((h) => h.id === response.id);
-        heroes.value.splice(index, 1, response); // Replace the hero in the array
+
+        // Update the hero in the map
+        heroes.value.set(response.id, response);
       } catch (error) {
         console.error("Failed to update hero:", error);
       }
@@ -49,7 +58,9 @@ export const useHeroStore = defineStore("hero", () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(currentHero.value),
         }).then((res) => res.json());
-        heroes.value = [...heroes.value, response]; // Add new hero to a new array
+
+        // Add the new hero to the map
+        heroes.value.set(response.id, response);
       } catch (error) {
         console.error("Failed to create hero:", error);
       }
@@ -58,15 +69,20 @@ export const useHeroStore = defineStore("hero", () => {
     resetCurrentHero();
   }
 
-
-
   async function deleteHero(id: number) {
     try {
       await fetch(`${import.meta.env.VITE_API_URL}/heroes/${id}`, { method: "DELETE" });
-      heroes.value = heroes.value.filter((hero) => hero.id !== id);
+
+      // Remove the hero from the map
+      heroes.value.delete(id);
     } catch (error) {
       console.error("Failed to delete hero:", error);
     }
+  }
+
+  function getHero(id: number | null | undefined) {
+    if (!id) return null;
+    return heroes.value.get(id) || null;
   }
 
   function resetCurrentHero() {
@@ -89,11 +105,13 @@ export const useHeroStore = defineStore("hero", () => {
   }
 
   return {
-    heroes,
+    heroes, // The Map for efficient lookups
+    heroesArray, // Computed array of heroes for iteration
     currentHero,
     fetchHeroes,
     saveHero,
     deleteHero,
+    getHero,
     resetCurrentHero,
     selectHeroForEdit,
     createNewHero,
