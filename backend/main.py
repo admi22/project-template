@@ -10,7 +10,7 @@ from sqlmodel import SQLModel, Session
 
 from .dependencies import create_db_and_tables, engine
 from .routers import heroes
-from backend.sample_data.sample_data import load_sample_data
+from .sample_data import load_sample_data
 
 
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:

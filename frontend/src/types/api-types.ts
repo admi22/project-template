@@ -75,6 +75,8 @@ export interface components {
             age?: number | null;
             /** Secret Name */
             secret_name: string;
+            /** City Id */
+            city_id?: number | null;
         };
         /** ValidationError */
         ValidationError: {

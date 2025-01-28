@@ -3,7 +3,7 @@ from typing import Annotated
 from sqlmodel import select
 
 from backend.dependencies import SessionDep
-from backend.models.hero import Hero
+from backend.models import Hero
 
 router = APIRouter(
     prefix="/heroes",
