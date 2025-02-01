@@ -11,24 +11,33 @@ import { useCityStore } from '@/stores/city';
 
 const heroStore = useHeroStore();
 const cityStore = useCityStore();
-const { heroesArray } = storeToRefs(heroStore);
-const { getHero } = heroStore;
+const { heroesArray, hoveredHeroId } = storeToRefs(heroStore);
+const { getHero, setHoveredHeroId } = heroStore;
 const { citiesArray } = storeToRefs(cityStore);
 </script>
 
 <template>
-    <div class="w-[300px]">
+    <div class="w-[400px]">
         <div class="flex justify-between mb-4">
             <h1 class="text-2xl font-bold">Cities</h1>
         </div>
-        <ul v-for="city in citiesArray" :key="city.id!" class="mb-2">
-            <span class="font-bold mr-2">{{ city.name }}</span>
-            <div class="badge badge-neutral badge-xs">{{ city.hero_ids.length }}</div>
+        <div class="flex gap-8">
 
-            <li v-for="heroId of city.hero_ids">
-                --- {{ getHero(heroId)!.name }}
-            </li>
-        </ul>
+            <div v-for="city in citiesArray" :key="city.id!" class="mb-2 w-full">
+                <div class="mb-2">
+                    <span class="font-bold mr-2">{{ city.name }}</span>
+                    <div class="badge badge-neutral badge-xs">{{ city.hero_ids.length }}</div>
+                </div>
 
+                <div class="flex flex-col gap-1">
+                    <div v-for="heroId of city.hero_ids"
+                        class="bg-base-100 p-1 px-2 rounded-lg shadow-sm transition-all duration-100"
+                        @mouseenter="setHoveredHeroId(heroId)" @mouseleave="setHoveredHeroId(null)"
+                        :class="{ 'font-bold': heroId === hoveredHeroId }">
+                        {{ getHero(heroId)!.name }}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>

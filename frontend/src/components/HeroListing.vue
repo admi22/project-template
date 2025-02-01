@@ -8,8 +8,8 @@ import HeroModal from "@/components/HeroModal.vue";
 import { useHeroStore } from "@/stores/hero";
 
 const heroStore = useHeroStore();
-const { heroesArray } = storeToRefs(heroStore);
-const { initializeHero, editHero, removeHero } = heroStore;
+const { heroesArray, hoveredHeroId } = storeToRefs(heroStore);
+const { initializeHero, editHero, removeHero, setHoveredHeroId } = heroStore;
 
 </script>
 
@@ -23,7 +23,7 @@ const { initializeHero, editHero, removeHero } = heroStore;
       </button>
     </div>
     <div class="flex flex-col gap-4">
-      <HeroCard v-for="hero in heroesArray" :key="hero.id!" :hero="hero"
+      <HeroCard v-for="hero in heroesArray" :key="hero.id!" :hero="hero" :highlighted="hero.id! == hoveredHeroId" @hover="setHoveredHeroId"
         @editHero="editHero(hero)" @deleteHero="removeHero(hero.id!)" />
     </div>
   </div>

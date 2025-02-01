@@ -8,13 +8,18 @@ export const useHeroStore = defineStore("hero", () => {
   // 🔹 STATE
   const heroes = ref(new Map<number, Hero>());
   const currentHero = ref<Hero | null>(null);
+  const hoveredHeroId = ref<number | null>(null);
 
   // 🔹 COMPUTED
   const heroesArray = computed(() => Array.from(heroes.value.values()));
 
   // 🔹 STATE MUTATION FUNCTIONS (PURE)
-  function resetCurrentHero() {
-    currentHero.value = null;
+  function getHero(id: number | null | undefined) {
+    return id ? heroes.value.get(id) || null : null;
+  }
+  
+  function initializeHero() {
+    currentHero.value = { id: null, name: "", secret_name: "", age: null };
   }
 
   function editHero(hero: Hero) {
@@ -22,12 +27,13 @@ export const useHeroStore = defineStore("hero", () => {
     currentHero.value = { ...hero };
   }
 
-  function initializeHero() {
-    currentHero.value = { id: null, name: "", secret_name: "", age: null };
+  function resetCurrentHero() {
+    currentHero.value = null;
   }
 
-  function getHero(id: number | null | undefined) {
-    return id ? heroes.value.get(id) || null : null;
+  function setHoveredHeroId(id: number | null) {
+    console.log("setHoveredHeroId", id);
+    hoveredHeroId.value = id;
   }
 
   // 🔹 API CALLS (CRUD)
@@ -99,6 +105,7 @@ export const useHeroStore = defineStore("hero", () => {
     heroes,
     heroesArray,
     currentHero,
+    hoveredHeroId,
     loadHeroes,
     createOrUpdateHero,
     removeHero,
@@ -106,5 +113,6 @@ export const useHeroStore = defineStore("hero", () => {
     resetCurrentHero,
     editHero,
     initializeHero,
+    setHoveredHeroId,
   };
 });

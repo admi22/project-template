@@ -21,5 +21,6 @@ onMounted(() => {
     <HeroListing />
     <div class="divider divider-horizontal h-20 w-20"></div>
     <CityListing />
+    <!-- <div class="divider divider-horizontal h-20 w-20"></div> -->
   </main>
 </template>
