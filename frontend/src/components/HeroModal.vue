@@ -17,7 +17,7 @@ function closeModal() {
 
 // Save changes to the hero
 function saveHero() {
-  heroStore.saveHero(); // Call the store's save method
+  heroStore.createOrUpdateHero(); // Call the store's save method
   closeModal(); // Close the modal after saving
 }
 

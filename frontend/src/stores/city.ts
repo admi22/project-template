@@ -1,53 +1,80 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
+import { fetchFromApi } from "@/utils/api";
 import type { City } from "@/types/types";
 
 export const useCityStore = defineStore("city", () => {
-    // State
+    // 🔹 STATE
     const cities = ref(new Map<number, City>()); // The Map for storing cities by ID
 
-    // Computed: Derive an array of cities from the map
+    // 🔹 COMPUTED
     const citiesArray = computed(() => Array.from(cities.value.values()));
 
-    // Actions
-    async function fetchCities() {
+    // 🔹 STATE MUTATION FUNCTIONS (PURE)
+    function getCity(id: number | null | undefined) {
+        return id ? cities.value.get(id) || null : null;
+    }
+
+    // 🔹 API CALLS (CRUD)
+    async function loadCities() {
         try {
-            const response: City[] = await fetch(`${import.meta.env.VITE_API_URL}/cities`).then((res) => res.json());
-
-            // Populate the map
-            cities.value.clear();
-            response.forEach((city) => {
-                cities.value.set(city.id!, city);
-            });
-
+            const response: City[] = await fetchFromApi(`${import.meta.env.VITE_API_URL}/cities`);
+            cities.value = new Map(response.map(city => [city.id!, city])); // More efficient assignment
             return response;
-        } catch (error) {
-            console.error("Failed to fetch cities:", error);
+        } catch {
             return [];
         }
     }
 
-    function updateCity(city: City) {
-        // Update the city in the map
-        cities.value.set(city.id!, city);
+    async function loadCity(id: number) {
+        try {
+            const response: City = await fetchFromApi(`${import.meta.env.VITE_API_URL}/cities/${id}`);
+
+            // Update the store with the new city
+            cities.value.set(response.id!, response);
+            return response;
+        } catch {
+            return null;
+        }
     }
 
-    function getCity(id: number | null | undefined) {
-        if (!id) return null;
-        return cities.value.get(id) || null;
+    async function createOrUpdateCity(city: City) {
+        try {
+            const isUpdating = !!city.id;
+            const endpoint = `${import.meta.env.VITE_API_URL}/cities` + (isUpdating ? `/${city.id}` : "");
+            const method = isUpdating ? "PATCH" : "POST";
+
+            const cityData = await fetchFromApi(endpoint, {
+                method,
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(city),
+            });
+
+            // Update the store with the new city
+            cities.value.set(cityData.id!, cityData);
+
+        } catch (error) {
+            console.error("Failed to save city:", error);
+        }
     }
 
-    function deleteCity(id: number) {
-        // Delete the city from the map
-        cities.value.delete(id);
+    async function removeCity(id: number) {
+        try {
+            await fetchFromApi(`${import.meta.env.VITE_API_URL}/cities/${id}`, { method: "DELETE" });
+            removeCity(id); // Remove from store
+        } catch (error) {
+            console.error("Failed to delete city:", error);
+        }
     }
 
+    // 🔹 RETURNED STORE API
     return {
-        cities, // The Map for efficient lookups
-        citiesArray, // Computed array of cities for iteration
-        fetchCities,
-        updateCity,
+        cities,
+        citiesArray,
         getCity,
-        deleteCity,
+        loadCities,
+        loadCity,
+        createOrUpdateCity,
+        removeCity,
     };
 });
