@@ -23,7 +23,6 @@ export const useHeroStore = defineStore("hero", () => {
   }
 
   function editHero(hero: Hero) {
-    console.log("editHero", hero);
     currentHero.value = { ...hero };
   }
 
@@ -32,7 +31,6 @@ export const useHeroStore = defineStore("hero", () => {
   }
 
   function setHoveredHeroId(id: number | null) {
-    console.log("setHoveredHeroId", id);
     hoveredHeroId.value = id;
   }
 

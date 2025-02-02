@@ -14,7 +14,7 @@ const { initializeHero, editHero, removeHero, setHoveredHeroId } = heroStore;
 </script>
 
 <template>
-  <div class="w-[300px]">
+  <div class="w-[500px]">
     <div class="flex justify-between mb-4">
       <h1 class="text-2xl font-bold">Heroes</h1>
       <button @click="initializeHero" class="btn btn-xs btn-neutral">

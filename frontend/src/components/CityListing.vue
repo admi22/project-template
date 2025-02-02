@@ -21,7 +21,7 @@ const { citiesArray } = storeToRefs(cityStore);
         <div class="flex justify-between mb-4">
             <h1 class="text-2xl font-bold">Cities</h1>
         </div>
-        <div class="flex gap-8">
+        <div class="flex flex-col gap-4">
 
             <div v-for="city in citiesArray" :key="city.id!" class="mb-2 w-full">
                 <div class="mb-2">
@@ -34,7 +34,7 @@ const { citiesArray } = storeToRefs(cityStore);
                         class="bg-base-100 p-1 px-2 rounded-lg shadow-sm transition-all duration-100"
                         @mouseenter="setHoveredHeroId(heroId)" @mouseleave="setHoveredHeroId(null)"
                         :class="{ 'font-bold': heroId === hoveredHeroId }">
-                        {{ getHero(heroId)!.name }}
+                        {{ getHero(heroId)?.name ?? 'Unknown Hero' }}
                     </div>
                 </div>
             </div>

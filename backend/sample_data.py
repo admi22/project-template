@@ -18,6 +18,7 @@ def load_sample_data():
     
     hero_1.city = city_1
     hero_2.city = city_2
+    hero_3.city = city_2
     
     db.add(hero_1)
     db.add(hero_2)
