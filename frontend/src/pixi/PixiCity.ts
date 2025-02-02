@@ -43,7 +43,6 @@ export class PixiCity extends PixiContainer {
             },
         })
         this.addChild(this.text)
-
         this.applyLayout()
     }
 

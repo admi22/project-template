@@ -70,7 +70,7 @@ watch(
           <div>
             <label for="city" class="label">City</label>
             <select id="city" class="select" v-model="currentHero.city_id">
-              <option :value="null">None</option>
+              <!-- <option :value="null">None</option> -->
               <option v-for="city in citiesArray" :key="city.id!" :value="city.id">{{ city.name }}</option>
             </select>
           </div>

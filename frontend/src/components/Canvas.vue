@@ -37,8 +37,19 @@ watch(citiesArray, (newCitiesArray) => {
     update()
 })
 
-function update() {
+// watch for changes in hoveredHeroId
+watch(hoveredHeroId, (newHoveredHeroId, oldHoveredHeroId) => {
+    if (oldHoveredHeroId) {
+        const oldPixiHero = pixiHeroes.get(oldHoveredHeroId)
+        oldPixiHero?.updateHighlightedDisplay(false)
+    }
+    if (newHoveredHeroId) {
+        const newPixiHero = pixiHeroes.get(newHoveredHeroId)
+        newPixiHero?.updateHighlightedDisplay(true)
+    }
+})
 
+function update() {
     citiesArray.value.forEach((city) => {
         const pixiCity = getOrCreatePixiCity(city.id!)
     })
@@ -67,7 +78,7 @@ function getOrCreatePixiHero(heroId: number) {
     let pixiHero = pixiHeroes.get(heroId)
     let hero = getHero(heroId)
     if (!pixiHero) {
-        pixiHero = new PixiHero(hero!)
+        pixiHero = new PixiHero(hero!, setHoveredHeroId)
         pixiHeroes.set(heroId, pixiHero)
     }
     return pixiHero
@@ -77,7 +88,7 @@ function init() {
     console.log('init')
 
     // initiate pixi app
-    app = new PixiApp(canvas.value as HTMLCanvasElement, 400, 400, 0xeeeeee)
+    app = new PixiApp(canvas.value as HTMLCanvasElement, 400, 400, 0xe4e4e7)
 }
 
 onMounted(() => {
@@ -92,8 +103,8 @@ function debug() {
 
 <template>
     <div class="w-full h-full relative">
-        <button @click="debug" class="btn btn-primary">Debug</button>
         <canvas class="w-full h-full" ref="canvas" @contextmenu.prevent></canvas>
+        <button @click="debug" class="btn btn-content btn-outline">Log Pixi Scene Graph</button>
     </div>
 </template>
 

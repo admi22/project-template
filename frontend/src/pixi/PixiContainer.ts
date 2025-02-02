@@ -55,14 +55,21 @@ export class PixiContainer extends Container {
 
     updateBackground() {
         if (!this.layoutProps.background) {
+            if (this.background) {
+                this.removeChild(this.background)
+                this.background = null
+            }
             return
         }
 
-        this.background = new Sprite(Texture.WHITE)
+        if (!this.background) {
+            this.background = new Sprite(Texture.WHITE)
+            this.addChild(this.background)
+        }
+
         this.background.width = this.layoutProps.width
         this.background.height = this.layoutProps.height
-        this.background.tint = this.layoutProps.background!
-        this.addChild(this.background)
+        this.background.tint = this.layoutProps.background
     }
 
     updateMask() {
