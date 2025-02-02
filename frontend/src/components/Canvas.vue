@@ -13,9 +13,8 @@ const { getHero, initializeHero, editHero, removeHero, setHoveredHeroId } = hero
 
 const cityStore = useCityStore()
 const { citiesArray, cities } = storeToRefs(cityStore)
+const { getCity } = cityStore
 
-const CITY_WIDTH = 100
-const CITY_HEIGHT = 200
 const HERO_WIDTH = 50
 const HERO_HEIGHT = 50
 
@@ -29,37 +28,35 @@ const pixiHeroes = new Map<number, PixiHero>()
 // watch for changes in heroesArray
 watch(heroesArray, (newHeroesArray) => {
     console.log('heroesArray changed', newHeroesArray)
-
-    newHeroesArray.forEach((hero) => {
-        const pixiHero = getOrCreatePixiHero(hero.id!)
-
-        // make sure hero is in the correct city
-        const pixiCity = getOrCreatePixiCity(hero.city_id!)
-        pixiCity.addChild(pixiHero)
-        pixiCity.applyLayout()
-
-  })
+    update()
 })
 
 // watch for changes in citiesArray
 watch(citiesArray, (newCitiesArray) => {
     console.log('citiesArray changed', newCitiesArray)
-
-    newCitiesArray.forEach((city, index) => {
-        const pixiCity = getOrCreatePixiCity(city.id!)
-
-        city.hero_ids.forEach((heroId, heroIndex) => {
-            const pixiHero = getOrCreatePixiHero(heroId)
-        })
-    })
-
-    console.log('app', app)
+    update()
 })
 
+function update() {
+
+    citiesArray.value.forEach((city) => {
+        const pixiCity = getOrCreatePixiCity(city.id!)
+    })
+
+    heroesArray.value.forEach((hero) => {
+        const pixiHero = getOrCreatePixiHero(hero.id!)
+
+        // make sure hero is in the correct city
+        const pixiCity = getOrCreatePixiCity(hero.city_id!)
+        pixiCity.addHero(pixiHero)
+    })
+}
+
 function getOrCreatePixiCity(cityId: number) {
+    const city = getCity(cityId)
     let pixiCity = pixiCities.get(cityId)
     if (!pixiCity) {
-        pixiCity = new PixiCity(CITY_WIDTH, CITY_HEIGHT)
+        pixiCity = new PixiCity(city!)
         pixiCities.set(cityId, pixiCity)
         app?.addContainer(pixiCity)
     }
@@ -68,8 +65,9 @@ function getOrCreatePixiCity(cityId: number) {
 
 function getOrCreatePixiHero(heroId: number) {
     let pixiHero = pixiHeroes.get(heroId)
+    let hero = getHero(heroId)
     if (!pixiHero) {
-        pixiHero = new PixiHero(HERO_WIDTH, HERO_HEIGHT)
+        pixiHero = new PixiHero(hero!)
         pixiHeroes.set(heroId, pixiHero)
     }
     return pixiHero
@@ -84,11 +82,17 @@ function init() {
 
 onMounted(() => {
     init()
+    update()
 })
+
+function debug() {
+    app?.debugSceneGraphRecursive(app.root, 0)
+}
 </script>
 
 <template>
     <div class="w-full h-full relative">
+        <button @click="debug" class="btn btn-primary">Debug</button>
         <canvas class="w-full h-full" ref="canvas" @contextmenu.prevent></canvas>
     </div>
 </template>
